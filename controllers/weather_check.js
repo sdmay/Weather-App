@@ -58,6 +58,7 @@ function checkCity(req, res, next) {
                     console.log(placeData.predictions.length);
                     if (placeData.predictions.length < 1) {
                         res.send({ error: "No city found with the name: " + req.params.city });
+                        return [2 /*return*/];
                     }
                     location = placeData.predictions[0].description.split(', ');
                     stateCheck = location.includes(req.params.state.toUpperCase());

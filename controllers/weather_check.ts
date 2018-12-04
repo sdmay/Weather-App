@@ -12,6 +12,7 @@ export async function checkCity(req: Request, res: Response, next: NextFunction)
    console.log(placeData.predictions.length)
    if(placeData.predictions.length < 1) {
        res.send({error: `No city found with the name: ${req.params.city}`})
+       return
    }
     let location = placeData.predictions[0].description.split(', ')
     const stateCheck = location.includes(req.params.state.toUpperCase())
