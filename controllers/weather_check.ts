@@ -29,6 +29,11 @@ export async function getTemp(req: Request, res: Response) {
     weather.setUnits('imperial');
     weather.getTemperature((err: any, temp: any) => {
       console.log(temp);
-      res.send({temperature: Math.round(temp)})
+      if(err) {
+          res.send(err)
+      } else {
+        res.send({temperature: Math.round(temp)})
+      }
+      
   });
 }
