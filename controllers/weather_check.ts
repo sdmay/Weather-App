@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import weather from 'openweather-apis';
 
 import axios from 'axios';
+require('dotenv').config()
 
 export async function checkCity(req: Request, res: Response, next: NextFunction) {
     console.log(req.params.city, req.params.state)
     const userState = req.params.state.toLowerCase().trim()
-    const placeCheck = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${req.params.city}+${req.params.state}&types=geocode&key=AIzaSyAWBYAZ4AEWK43DLuQavIu_DljgTIwgYGY`)
+    const placeCheck = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${req.params.city}+${req.params.state}&types=geocode&key=${process.env.GOOGLEMAPS}`)
     const placeData = await placeCheck.data
     let location = placeData.predictions[0].description.split(', ')
     const stateCheck = location.includes(req.params.state.toUpperCase())
@@ -21,7 +22,9 @@ export async function checkCity(req: Request, res: Response, next: NextFunction)
 }
 
 export async function getTemp(req: Request, res: Response) {
-    weather.setAPPID('9cd30a7407eff78fc8377ef08f5b6ffd')
+    console.log(process.env.GOOGLEMAPS)
+
+    weather.setAPPID(process.env.WEATHERAPI)
     weather.setCity(req.params.city);
     weather.setUnits('imperial');
     weather.getTemperature((err: any, temp: any) => {

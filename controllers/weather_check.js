@@ -40,6 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var openweather_apis_1 = __importDefault(require("openweather-apis"));
 var axios_1 = __importDefault(require("axios"));
+require('dotenv').config();
 function checkCity(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
         var userState, placeCheck, placeData, location, stateCheck, cityName, stateName;
@@ -48,7 +49,7 @@ function checkCity(req, res, next) {
                 case 0:
                     console.log(req.params.city, req.params.state);
                     userState = req.params.state.toLowerCase().trim();
-                    return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=AIzaSyAWBYAZ4AEWK43DLuQavIu_DljgTIwgYGY")];
+                    return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=" + process.env.GOOGLEMAPS)];
                 case 1:
                     placeCheck = _a.sent();
                     return [4 /*yield*/, placeCheck.data];
@@ -73,7 +74,8 @@ exports.checkCity = checkCity;
 function getTemp(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openweather_apis_1.default.setAPPID('9cd30a7407eff78fc8377ef08f5b6ffd');
+            console.log(process.env.GOOGLEMAPS);
+            openweather_apis_1.default.setAPPID(process.env.WEATHERAPI);
             openweather_apis_1.default.setCity(req.params.city);
             openweather_apis_1.default.setUnits('imperial');
             openweather_apis_1.default.getTemperature(function (err, temp) {
