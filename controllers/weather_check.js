@@ -43,21 +43,17 @@ var axios_1 = __importDefault(require("axios"));
 require('dotenv').config();
 function checkCity(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var userState, placeCheck, placeData, location, stateCheck, cityName, stateName;
+        var placeCheck, placeData, location, stateCheck;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log(req.params.city, req.params.state);
-                    userState = req.params.state.toLowerCase().trim();
-                    return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=" + process.env.GOOGLEMAPS)];
+                case 0: return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=" + process.env.GOOGLEMAPS)];
                 case 1:
                     placeCheck = _a.sent();
                     return [4 /*yield*/, placeCheck.data];
                 case 2:
                     placeData = _a.sent();
-                    console.log(placeData.predictions.length);
                     if (placeData.predictions.length < 1) {
-                        res.send({ error: "No city found with the name: " + req.params.city });
+                        res.send({ error: "Not Found" });
                         return [2 /*return*/];
                     }
                     location = placeData.predictions[0].description.split(', ');
@@ -66,9 +62,7 @@ function checkCity(req, res, next) {
                         next();
                     }
                     else {
-                        cityName = req.params.city[0].toUpperCase() + req.params.city.substr(1);
-                        stateName = userState.toUpperCase();
-                        res.send({ error: cityName + " could not be found in " + stateName });
+                        res.send({ error: "Not Found" });
                     }
                     return [2 /*return*/];
             }
@@ -79,12 +73,10 @@ exports.checkCity = checkCity;
 function getTemp(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            console.log(process.env.GOOGLEMAPS);
             openweather_apis_1.default.setAPPID(process.env.WEATHERAPI);
             openweather_apis_1.default.setCity(req.params.city);
             openweather_apis_1.default.setUnits('imperial');
             openweather_apis_1.default.getTemperature(function (err, temp) {
-                console.log(temp);
                 if (err) {
                     res.send(err);
                 }
