@@ -55,6 +55,10 @@ function checkCity(req, res, next) {
                     return [4 /*yield*/, placeCheck.data];
                 case 2:
                     placeData = _a.sent();
+                    console.log(placeData.predictions.length);
+                    if (placeData.predictions.length < 1) {
+                        res.send({ error: "No city found with the name: " + req.params.city });
+                    }
                     location = placeData.predictions[0].description.split(', ');
                     stateCheck = location.includes(req.params.state.toUpperCase());
                     if (stateCheck) {
@@ -80,7 +84,12 @@ function getTemp(req, res) {
             openweather_apis_1.default.setUnits('imperial');
             openweather_apis_1.default.getTemperature(function (err, temp) {
                 console.log(temp);
-                res.send({ temperature: Math.round(temp) });
+                if (err) {
+                    res.send(err);
+                }
+                else {
+                    res.send({ temperature: Math.round(temp) });
+                }
             });
             return [2 /*return*/];
         });

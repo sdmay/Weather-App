@@ -9,6 +9,10 @@ export async function checkCity(req: Request, res: Response, next: NextFunction)
     const userState = req.params.state.toLowerCase().trim()
     const placeCheck = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${req.params.city}+${req.params.state}&types=geocode&key=${process.env.GOOGLEMAPS}`)
     const placeData = await placeCheck.data
+   console.log(placeData.predictions.length)
+   if(placeData.predictions.length < 1) {
+       res.send({error: `No city found with the name: ${req.params.city}`})
+   }
     let location = placeData.predictions[0].description.split(', ')
     const stateCheck = location.includes(req.params.state.toUpperCase())
     if (stateCheck) {
