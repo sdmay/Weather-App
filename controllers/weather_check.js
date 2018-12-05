@@ -43,10 +43,12 @@ var axios_1 = __importDefault(require("axios"));
 require('dotenv').config();
 function checkCity(req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
-        var placeCheck, placeData, location, stateCheck;
+        var placeCheck, placeData, location, stateCheck, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=" + process.env.GOOGLEMAPS)];
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, axios_1.default.get("https://maps.googleapis.com/maps/api/place/autocomplete/json?input=" + req.params.city + "+" + req.params.state + "&types=geocode&key=" + process.env.GOOGLEMAPS)];
                 case 1:
                     placeCheck = _a.sent();
                     return [4 /*yield*/, placeCheck.data];
@@ -64,7 +66,12 @@ function checkCity(req, res, next) {
                     else {
                         res.send({ error: "Not Found" });
                     }
-                    return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    res.sendStatus(500);
+                    return [2 /*return*/, false];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -73,17 +80,23 @@ exports.checkCity = checkCity;
 function getTemp(req, res) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            openweather_apis_1.default.setAPPID(process.env.WEATHERAPI);
-            openweather_apis_1.default.setCity(req.params.city);
-            openweather_apis_1.default.setUnits('imperial');
-            openweather_apis_1.default.getTemperature(function (err, temp) {
-                if (err) {
-                    res.send(err);
-                }
-                else {
-                    res.send({ temperature: Math.round(temp) });
-                }
-            });
+            try {
+                openweather_apis_1.default.setAPPID(process.env.WEATHERAPI);
+                openweather_apis_1.default.setCity(req.params.city);
+                openweather_apis_1.default.setUnits('imperial');
+                openweather_apis_1.default.getTemperature(function (err, temp) {
+                    if (err) {
+                        res.send(err);
+                    }
+                    else {
+                        res.send({ temperature: Math.round(temp) });
+                    }
+                });
+            }
+            catch (err) {
+                res.sendStatus(500);
+                return [2 /*return*/, false];
+            }
             return [2 /*return*/];
         });
     });
